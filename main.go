@@ -37,9 +37,13 @@ func getStatus(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// her må vi ha sikkerhetshullet
 func getXMLConfig(w http.ResponseWriter, r *http.Request) {
+	//her er da XML data som blir sendt via POST
 	body, _ := ioutil.ReadAll(r.Body)
-	fmt.Println(string(body))
+
+	//TODO lagre til fil og restart http listener
+	fmt.Println(body)
 
 }
 
@@ -53,6 +57,7 @@ func main() {
 
 	fmt.Println(config.Address)
 	fmt.Println(config.Port)
+
 	addrString := config.Address + ":" + config.Port
 
 	router := mux.NewRouter().StrictSlash(true)
