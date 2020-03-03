@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -36,12 +37,30 @@ func getStatus(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func getXMLConfig(w http.ResponseWriter, r *http.Request) {
+	body, _ := ioutil.ReadAll(r.Body)
+	fmt.Println(string(body))
+
+}
+
 func main() {
 	fmt.Println("Starting fake IOT")
+
+	config, err := ReadConfigFile()
+	if err != nil {
+		log.Panic(err.Error())
+	}
+
+	fmt.Println(config.Address)
+	fmt.Println(config.Port)
+	addrString := config.Address + ":" + config.Port
+
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", homeLink)
 	router.HandleFunc("/status", getStatus).Methods("GET")
 	router.HandleFunc("/status/1", lockTheLock).Methods("GET")
 	router.HandleFunc("/status/0", unLock).Methods("GET")
-	log.Fatal(http.ListenAndServe("192.168.2.225:8080", router))
+	router.HandleFunc("/config", getXMLConfig).Methods("GET", "POST")
+	log.Fatal(http.ListenAndServe(addrString, router))
+
 }
