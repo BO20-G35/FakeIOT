@@ -18,6 +18,7 @@ func homeLink(w http.ResponseWriter, r *http.Request) {
 	_, _ = fmt.Fprintf(w, "Verry vulnerable IoT Lock !")
 }
 
+//TODO sett opp autentisering passord med i en URL parameter
 func unLock(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("unLock called")
 	vulnLock.status = "0"
@@ -41,9 +42,13 @@ func getStatus(w http.ResponseWriter, r *http.Request) {
 func getXMLConfig(w http.ResponseWriter, r *http.Request) {
 	//her er da XML data som blir sendt via POST
 	body, _ := ioutil.ReadAll(r.Body)
+	err := SaveXMLFile(body)
 
-	//TODO lagre til fil og restart http listener
-	fmt.Println(body)
+	if err != nil {
+		fmt.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = fmt.Fprintf(w, "")
+	}
 
 }
 
