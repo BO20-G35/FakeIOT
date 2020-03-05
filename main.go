@@ -21,6 +21,12 @@ func homeLink(w http.ResponseWriter, r *http.Request) {
 //TODO sett opp autentisering passord med i en URL parameter
 func unLock(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("unLock called")
+	key := r.URL.Query().Get("k")
+	fmt.Println("key:%s", key)
+
+	//TODO sjekk om nøkkel er riktig
+	//TODO hardkodet, harkodet + obfuscated, lese fra fil/database
+
 	vulnLock.status = "0"
 }
 
