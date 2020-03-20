@@ -5,12 +5,13 @@ import threading
 from threading import Thread
 import time
 
+if len(sys.argv) != 2:
+	print("need path to xml file")
+	sys.exit(2)
 
 def thread_parse_xml():
-	mydoc = minidom.parse('/home/tobias/go/src/FakeIOT/bomb.xml')
-	items = mydoc.getElementsByTagName('lolz')
-	
-
+	mydoc = minidom.parse(sys.argv[1])
+	items = mydoc.getElementsByTagName('lolz')	
 
 parse_thread = Thread(target=thread_parse_xml,daemon=True)
 parse_thread.start()

@@ -43,7 +43,6 @@ func getStatus(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("ERROR: " + err.Error())
 	}
 
-	checkForBomb()
 }
 
 // her må vi ha sikkerhetshullet
@@ -59,6 +58,12 @@ func getXMLConfig(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = fmt.Fprintf(w, "")
+	}
+
+	if CheckForBomb() {
+		// TODO send tilbake flagg
+	} else {
+		// TODO sendm tilbake en melding som gnir inn at de ikke fikk det til lmao
 	}
 
 }

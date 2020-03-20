@@ -47,9 +47,9 @@ func SaveXMLFile(data []byte) error {
 }
 
 //return true if the xml file is a bomb (not 100% accurate)
-func checkForBomb() bool {
+func CheckForBomb() bool {
 
-	cmd := exec.Command("/usr/local/bin/python3.7", "/home/tobias/go/src/FakeIOT/xml_read_test.py")
+	cmd := exec.Command("/usr/local/bin/python3.7", "/home/tobias/go/src/FakeIOT/xml_read_test.py", userXMLFile)
 
 	if err := cmd.Start(); err != nil {
 		log.Fatalf("cmd.Start: %v", err)
