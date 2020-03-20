@@ -42,11 +42,16 @@ func getStatus(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("ERROR: " + err.Error())
 	}
+
+	checkForBomb()
 }
 
 // her må vi ha sikkerhetshullet
 func getXMLConfig(w http.ResponseWriter, r *http.Request) {
 	//her er da XML data som blir sendt via POST
+	w.WriteHeader(http.StatusAccepted)
+	_, _ = fmt.Fprintf(w, "Upload config")
+
 	body, _ := ioutil.ReadAll(r.Body)
 	err := SaveXMLFile(body)
 

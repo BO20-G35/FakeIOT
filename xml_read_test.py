@@ -1,24 +1,25 @@
 from xml.dom import minidom
 import os
-import psutil
+import sys
+import threading
+from threading import Thread
+import time
 
 
-process = psutil.Process(os.getpid())
-print(process.memory_info().rss) #11MB
-
-mydoc = minidom.parse('bomb.xml')
-items = mydoc.getElementsByTagName('lolz')
-
-
-print(len(items))
-print(items)
-
-process = psutil.Process(os.getpid())
-print(process.memory_info().rss)  # 42MB
+def thread_parse_xml():
+	mydoc = minidom.parse('/home/tobias/go/src/FakeIOT/bomb.xml')
+	items = mydoc.getElementsByTagName('lolz')
+	
 
 
-#tiden det tar å lese inn xml filen linje 9/10
-#vil ta lang tid hvis de har lagd en xml bombe
-#vi kan ta tiden før den bli lest inn så etter 
-#hvis tiden er si 10 sec så har de klart det
-#bakdel er at de må ikke lage en for stor bombe 
+parse_thread = Thread(target=thread_parse_xml,daemon=True)
+parse_thread.start()
+
+time.sleep(5)
+
+if threading.active_count() == 2:
+	print("BOMB")
+	sys.exit(1)
+
+print("OK")
+sys.exit(0)

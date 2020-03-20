@@ -4,7 +4,10 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
+	"os/exec"
+	"syscall"
 )
 
 type Settings struct {
@@ -41,4 +44,25 @@ func SaveXMLFile(data []byte) error {
 	}
 
 	return nil
+}
+
+//return true if the xml file is a bomb (not 100% accurate)
+func checkForBomb() bool {
+
+	cmd := exec.Command("/usr/local/bin/python3.7", "/home/tobias/go/src/FakeIOT/xml_read_test.py")
+
+	if err := cmd.Start(); err != nil {
+		log.Fatalf("cmd.Start: %v", err)
+	}
+
+	if err := cmd.Wait(); err != nil {
+		if exiterr, ok := err.(*exec.ExitError); ok {
+			if _, ok := exiterr.Sys().(syscall.WaitStatus); ok {
+				return true
+			}
+		} else {
+			log.Fatalf("cmd.Wait: %v", err)
+		}
+	}
+	return false
 }
