@@ -16,14 +16,14 @@ type Settings struct {
 }
 
 const defaultXMLFile = "default_config.xml"
-const userXMLFile = "user_config.xml"
+const UserXMLFile = "user_config.xml"
 
 func ReadConfigFile() (*Settings, error) {
 
-	var fileToRead = userXMLFile
-	if _, err := os.Stat(userXMLFile); err != nil {
+	var fileToRead = UserXMLFile
+	if _, err := os.Stat(UserXMLFile); err != nil {
 		fileToRead = defaultXMLFile
-		fmt.Println("userXMLFile not found reading from defaultXMLFile")
+		fmt.Println("UserXMLFile not found reading from defaultXMLFile")
 	}
 
 	fmt.Println("reading userXMLFIle")
@@ -37,8 +37,8 @@ func ReadConfigFile() (*Settings, error) {
 
 func SaveXMLFile(data []byte) error {
 
-	fmt.Println("Saving new userXMLFile")
-	err := ioutil.WriteFile(userXMLFile, data, 0644)
+	fmt.Println("Saving new UserXMLFile")
+	err := ioutil.WriteFile(UserXMLFile, data, 0644)
 	if err != nil {
 		return err
 	}
@@ -49,7 +49,7 @@ func SaveXMLFile(data []byte) error {
 //return true if the xml file is a bomb (not 100% accurate)
 func CheckForBomb() bool {
 
-	cmd := exec.Command("/usr/local/bin/python3.7", "/home/tobias/go/src/FakeIOT/xml_read_test.py", userXMLFile)
+	cmd := exec.Command("/usr/local/bin/python3.7", "/home/tobias/go/src/FakeIOT/xml_read_test.py", UserXMLFile)
 
 	if err := cmd.Start(); err != nil {
 		log.Fatalf("cmd.Start: %v", err)

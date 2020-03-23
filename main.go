@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
 type lock struct {
@@ -18,21 +19,31 @@ func homeLink(w http.ResponseWriter, r *http.Request) {
 	_, _ = fmt.Fprintf(w, "Verry vulnerable IoT Lock !")
 }
 
-//TODO sett opp autentisering passord med i en URL parameter
 func unLock(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("unLock called")
-	key := r.URL.Query().Get("k")
-	fmt.Println("key:%s", key)
 
-	//TODO sjekk om nøkkel er riktig
-	//TODO hardkodet, harkodet + obfuscated, lese fra fil/database
+	if ValidateKeyForLock(r) {
+		vulnLock.status = "0"
+		w.WriteHeader(http.StatusAccepted)
+		_, _ = fmt.Fprintf(w, "Lock successfully locked.")
+	} else {
+		w.WriteHeader(http.StatusForbidden)
+		_, _ = fmt.Fprintf(w, "Invalid Key.")
+	}
 
-	vulnLock.status = "0"
 }
 
 func lockTheLock(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("lockTheLock called")
-	vulnLock.status = "1"
+
+	if ValidateKeyForLock(r) {
+		vulnLock.status = "1"
+		w.WriteHeader(http.StatusAccepted)
+		_, _ = fmt.Fprintf(w, "Lock successfully locked.")
+	} else {
+		w.WriteHeader(http.StatusForbidden)
+		_, _ = fmt.Fprintf(w, "Invalid Key.")
+	}
 }
 
 func getStatus(w http.ResponseWriter, r *http.Request) {
@@ -45,11 +56,12 @@ func getStatus(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// her må vi ha sikkerhetshullet
 func getXMLConfig(w http.ResponseWriter, r *http.Request) {
-	//her er da XML data som blir sendt via POST
-	w.WriteHeader(http.StatusAccepted)
-	_, _ = fmt.Fprintf(w, "Upload config")
+
+	if ValidateKeyForLock(r) == false {
+		w.WriteHeader(http.StatusForbidden)
+		_, _ = fmt.Fprintf(w, "Invalid Key.")
+	}
 
 	body, _ := ioutil.ReadAll(r.Body)
 	err := SaveXMLFile(body)
@@ -61,9 +73,13 @@ func getXMLConfig(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if CheckForBomb() {
-		// TODO send tilbake flagg
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = fmt.Fprintf(w, GetFlagString())
+		_ = os.Remove(UserXMLFile)
+
 	} else {
-		// TODO sendm tilbake en melding som gnir inn at de ikke fikk det til lmao
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = fmt.Fprintf(w, "Everything ok ;)")
 	}
 
 }

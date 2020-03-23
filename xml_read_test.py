@@ -11,7 +11,7 @@ if len(sys.argv) != 2:
 
 def thread_parse_xml():
 	mydoc = minidom.parse(sys.argv[1])
-	items = mydoc.getElementsByTagName('lolz')	
+	items = mydoc.getElementsByTagName('lolz')
 
 parse_thread = Thread(target=thread_parse_xml,daemon=True)
 parse_thread.start()
