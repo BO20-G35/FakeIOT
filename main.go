@@ -9,6 +9,10 @@ import (
 	"os"
 )
 
+//kengey
+//openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
+//openssl genrsa -out server.key 2048
+
 type lock struct {
 	status string
 }
@@ -103,6 +107,7 @@ func main() {
 	router.HandleFunc("/status/1", lockTheLock).Methods("GET")
 	router.HandleFunc("/status/0", unLock).Methods("GET")
 	router.HandleFunc("/config", getXMLConfig).Methods("GET", "POST")
-	log.Fatal(http.ListenAndServe(addrString, router))
+	//log.Fatal(http.ListenAndServe(addrString, router))
+	log.Fatal(http.ListenAndServeTLS(addrString, "server.crt", "server.key", router))
 
 }

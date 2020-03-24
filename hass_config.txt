@@ -1,0 +1,9 @@
+lock:
+  - platform: command_line
+    switches:
+      superlock:
+        command_on: "/usr/bin/curl -X GET http://127.0.0.1:8080/status/1"
+        command_off: "/usr/bin/curl -X GET http://127.0.0.1:8080/status/0"
+        command_state: "/usr/bin/curl -X GET http://127.0.0.1:8080/status"
+        value_template: '{{ value == "1" }}'
+        friendly_name: Super lock
