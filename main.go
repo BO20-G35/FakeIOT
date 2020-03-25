@@ -68,6 +68,13 @@ func getXMLConfig(w http.ResponseWriter, r *http.Request) {
 	}
 
 	body, _ := ioutil.ReadAll(r.Body)
+
+	// Checks that the body of request was not empty and only continues if it wasn't
+	if len(body) <= 0 {
+		fmt.Println("Invalid (empty) request.")
+		return
+	}
+
 	err := SaveXMLFile(body)
 
 	if err != nil {
