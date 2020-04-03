@@ -25,8 +25,8 @@ func ReadConfigFile() (*Settings, error) {
 		fileToRead = defaultXMLFile
 		fmt.Println("UserXMLFile not found reading from defaultXMLFile")
 	}
+	fmt.Printf("Reading from %s\n", fileToRead)
 
-	fmt.Println("reading userXMLFIle")
 	data, err := ioutil.ReadFile(fileToRead)
 	config := &Settings{}
 	_ = xml.Unmarshal([]byte(data), &config)
@@ -49,7 +49,8 @@ func SaveXMLFile(data []byte) error {
 //return true if the xml file is a bomb (not 100% accurate)
 func CheckForBomb() bool {
 
-	cmd := exec.Command("/usr/local/bin/python3.7", "/home/tobias/go/src/FakeIOT/xml_read_test.py", UserXMLFile)
+	pyscript := os.Args[1]
+	cmd := exec.Command("/usr/local/bin/python3.7", pyscript, UserXMLFile)
 
 	if err := cmd.Start(); err != nil {
 		log.Fatalf("cmd.Start: %v", err)

@@ -29,7 +29,7 @@ func unLock(w http.ResponseWriter, r *http.Request) {
 	if ValidateKeyForLock(r) {
 		vulnLock.status = "0"
 		w.WriteHeader(http.StatusAccepted)
-		_, _ = fmt.Fprintf(w, "Lock successfully locked.")
+		_, _ = fmt.Fprintf(w, "Lock successfully unlocked.")
 	} else {
 		w.WriteHeader(http.StatusForbidden)
 		_, _ = fmt.Fprintf(w, "Invalid Key.")
@@ -59,9 +59,8 @@ func getStatus(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
-
 func getXMLConfig(w http.ResponseWriter, r *http.Request) {
-
+	fmt.Println("getXMLconfig")
 	if ValidateKeyForLock(r) == false {
 		w.WriteHeader(http.StatusForbidden)
 		_, _ = fmt.Fprintf(w, "Invalid Key.")
@@ -96,6 +95,12 @@ func getXMLConfig(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+
+	if len(os.Args) != 2 {
+		fmt.Println("Specify path to the python script")
+		os.Exit(1)
+	}
+
 	fmt.Println("Starting fake IOT")
 
 	config, err := ReadConfigFile()
@@ -111,9 +116,10 @@ func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", homeLink)
 	router.HandleFunc("/status", getStatus).Methods("GET")
+	router.HandleFunc("/status/", getStatus).Methods("GET")
 	router.HandleFunc("/status/1", lockTheLock).Methods("GET")
 	router.HandleFunc("/status/0", unLock).Methods("GET")
-	router.HandleFunc("/config", getXMLConfig).Methods("GET", "POST")
+	router.HandleFunc("/config", getXMLConfig).Methods("POST")
 	//log.Fatal(http.ListenAndServe(addrString, router))
 	log.Fatal(http.ListenAndServeTLS(addrString, "server.crt", "server.key", router))
 
