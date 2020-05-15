@@ -61,10 +61,6 @@ func getStatus(w http.ResponseWriter, r *http.Request) {
 }
 func getXMLConfig(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("getXMLconfig")
-	if ValidateKeyForLock(r) == false {
-		w.WriteHeader(http.StatusForbidden)
-		_, _ = fmt.Fprintf(w, "Invalid Key.")
-	}
 
 	body, _ := ioutil.ReadAll(r.Body)
 
